@@ -1,0 +1,455 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_style %}
+  <style>
+.products__wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.scroll-track {
+  display: flex;
+  gap: 2rem;
+  animation: scroll-left 30s linear infinite;
+  width: max-content;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.product__item {
+  flex: 0 0 auto;
+  width: 250px; /* You can adjust this as needed */
+}
+
+.products__wrapper:hover .scroll-track {
+  animation-play-state: paused; /* Pause on hover */
+}
+
+
+@media (max-width: 768px) {
+  .product__item {
+    width: 180px;
+  }
+}
+
+
+    @keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.slide-up {
+  animation: slideUp 0.8s ease forwards;
+}
+
+.zoom-in {
+  animation: zoomIn 0.8s ease forwards;
+}
+
+  </style>
+
+{% endblock extra_style %}
+
+{% block content %}
+<main class="main">
+  <!--=============== HOME ===============-->
+  <section class="home section--lg">
+    <div class="home__container container grid">
+      <div class="home__content">
+        <span class="home__subtitle"></span>
+        <h1 class="home__title">FARM FRESH <span>Get Fresh Grocery</span></h1>
+        <p class="home__description">Save more with coupons & up to 20% off</p>
+        <a href="shop.html" class="btn">Shop Now</a>
+      </div>
+      <img src="{% static 'pics/logo1.png' %}" alt="Logo" />
+    </div>
+  </section>
+  
+  
+  
+  <!--=============== CATEGORIES ===============-->
+  <section class="categories container section">
+    <h3 class="section__title"><span>Popular</span> Categories</h3>
+    <div class="categories__container swiper">
+      <div class="swiper-wrapper">
+        {% for key, value in category_choices %}
+          <a href="{% url 'category_filter' key %}" class="category__item swiper-slide">
+            <!-- <img src="{% static 'img/categories/%s.webp'|stringformat:key %}" alt="{{ value }}" class="category__img" /> -->
+            <h3 class="category__title">{{ value }}</h3>
+          </a>
+        {% endfor %}
+      </div>
+  
+      <div class="swiper-button-prev">
+        <i class="fi fi-rs-angle-left"></i>
+      </div>
+      <div class="swiper-button-next">
+        <i class="fi fi-rs-angle-right"></i>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="products container section mt-3 mb-2" data-aos="fade-up">
+    <div class="tab__btns" data-aos="fade-in">
+      <span class="tab__btn active-tab" data-target="#featured">Popular</span>
+    </div>
+  
+    <div class="tab__items">
+      <div class="tab__item active-tab" content id="featured">
+        <div class="products__wrapper">
+          <div class="products__container scroll-track">
+            {% for product in products %}
+            <div class="product__item" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+              <div class="product__banner">
+                <a href="{% url 'products_detail' product.product_id %}" class="product__images">
+                  <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}" class="product__img default" />
+                  <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}" class="product__img hover" />
+                </a>
+                <div class="product__actions">
+                  <a href="{% url 'products_detail' product.product_id %}" class="action__btn" aria-label="Quick View">
+                    <i class="fi fi-rs-eye"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="product__content">
+                <span class="product__category">Grocery</span>
+                <a href="{% url 'products_detail' product.product_id %}">
+                  <h3 class="product__title">{{ product.product_name }}</h3>
+                </a>
+                <div class="product__rating">
+                  <i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i>
+                </div>
+                <div class="product__price flex">
+                  <span class="new__price">₹{{ product.offer_price }}/piece</span>
+                  <span class="old__price">₹{{ product.mrp }}/piece</span>
+                </div>
+                <a href="{% url 'add_to_cart' product.product_id %}" class="action__btn cart__btn" aria-label="Add To Cart">
+                  <i class="fi fi-rs-shopping-bag-add"></i>
+                </a>
+              </div>
+            </div>
+            {% endfor %}
+  
+            <!-- Cloned items for infinite loop -->
+            {% for product in products %}
+            <div class="product__item" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+              <div class="product__banner">
+                <a href="{% url 'products_detail' product.product_id %}" class="product__images">
+                  <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}" class="product__img default" />
+                  <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}" class="product__img hover" />
+                </a>
+                <div class="product__actions">
+                  <a href="{% url 'products_detail' product.product_id %}" class="action__btn" aria-label="Quick View">
+                    <i class="fi fi-rs-eye"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="product__content">
+                <span class="product__category">Grocery</span>
+                <a href="{% url 'products_detail' product.product_id %}">
+                  <h3 class="product__title">{{ product.product_name }}</h3>
+                </a>
+                <div class="product__rating">
+                  <i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i>
+                </div>
+                <div class="product__price flex">
+                  <span class="new__price">₹{{ product.offer_price }}/piece</span>
+                  <span class="old__price">₹{{ product.mrp }}/piece</span>
+                </div>
+                <a href="{% url 'add_to_cart' product.product_id %}" class="action__btn cart__btn" aria-label="Add To Cart">
+                  <i class="fi fi-rs-shopping-bag-add"></i>
+                </a>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+  <!--=============== PRODUCTS ===============-->
+<!-- PRODUCTS SECTION -->
+<section class="products container section mt-3 mb-2" data-aos="fade-up">
+  <div class="tab__btns" data-aos="fade-in">
+    <span class="tab__btn active-tab" data-target="#featured">Newly Added</span>
+  </div>
+
+  <div class="tab__items">
+    <div class="tab__item active-tab" content id="featured">
+      <div class="products__container grid">
+        {% for product in products %}
+        <div class="product__item" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+          <div class="product__banner">
+            <a href="{% url 'products_detail' product.product_id %}" class="product__images">
+              <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}" class="product__img default" />
+              <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}" class="product__img hover" />
+            </a>
+            <div class="product__actions">
+              <a href="{% url 'products_detail' product.product_id %}" class="action__btn" aria-label="Quick View">
+                <i class="fi fi-rs-eye"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="product__content">
+            <span class="product__category">Grocery</span>
+            <a href="{% url 'products_detail' product.product_id %}">
+              <h3 class="product__title">{{ product.product_name }}</h3>
+            </a>
+            <div class="product__rating">
+              <i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i><i class="fi fi-rs-star"></i>
+            </div>
+            <div class="product__price flex">
+              <span class="new__price">₹{{ product.offer_price}}/piece</span>
+              <span class="old__price">₹{{product.mrp}}/piece</span>
+            </div>
+            <a href="{% url 'add_to_cart' product.product_id %}" class="action__btn cart__btn" aria-label="Add To Cart">
+              <i class="fi fi-rs-shopping-bag-add"></i>
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+<!-- NEW ARRIVALS SECTION -->
+
+
+
+
+  <!--=============== SHOWCASE ===============-->
+  <section class="showcase section">
+    <div class="showcase__container container grid">
+  
+      <!-- Fresh Section -->
+      <div class="showcase__wrapper animate-on-scroll">
+        <h3 class="section__title">Fresh</h3>
+      
+        <div class="showcase__item animate-on-scroll">
+          <a href="coconut.html" class="showcase__img-box">
+            <img src="./assets/img/111 big-coconut-1-pc-approx-350-g-600-g.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="coconut.html"><h4 class="showcase__title">Coconut</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹50.00</span>
+              <span class="old__price">₹70.00</span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="showcase__item zoom-in">
+          <a href="apple.html" class="showcase__img-box">
+            <img src=".Main/assets/img/112 apple.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="details.html"><h4 class="showcase__title">Apple</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹200.00</span>
+              <span class="old__price">₹245.00</span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="showcase__item zoom-in">
+          <a href="pineapple.html" class="showcase__img-box">
+            <img src="./assets/img/113 pineapple-queen-1-pc .webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="details.html"><h4 class="showcase__title">Pineapple</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹150.00</span>
+              <span class="old__price">₹179.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Home & Lifestyle Section -->
+      <div class="showcase__wrapper slide-up">
+        <h3 class="section__title fade-in">Home & Lifestyle</h3>
+  
+        <div class="showcase__item zoom-in">
+          <a href="8_kitchenware.html" class="showcase__img-box">
+            <img src="./assets/img/home-11-liv-flame-non-stick-black-aluminium-cookware-sets-of-3-product-images-o494241286-p604752734-0-202309232039.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="8_kitchenware.html"><h4 class="showcase__title">Non stick pan</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹499.00</span>
+              <span class="old__price">₹699.00</span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="showcase__item zoom-in">
+          <a href="8_kitchenware.html" class="showcase__img-box">
+            <img src="./assets/img/home-22-biodegradable-garbage-bags-medium-size-19-21-inch-90-bags-3-rolls-product-images-orvgl7wlpus-p603457038-0-202401081227.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="8_kitchenware.html"><h4 class="showcase__title">Biodegradable bag</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹179.00</span>
+              <span class="old__price">₹200.00</span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="showcase__item zoom-in">
+          <a href="8_kitchenware.html" class="showcase__img-box">
+            <img src="./assets/img/home-33-gas-lighter-black-isi-mark-1-year-warranty-product-images-orv0vqf2g5q-p594433959-0-202210121905.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="8_kitchenware.html"><h4 class="showcase__title">Gas Lighter</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹145.00</span>
+              <span class="old__price">₹180.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Grocery Essentials Section -->
+      <div class="showcase__wrapper slide-up">
+        <h3 class="section__title fade-in">Grocery Essentials</h3>
+  
+        <div class="showcase__item zoom-in">
+          <a href="6_personalcare.html" class="showcase__img-box">
+            <img src="./assets/img/ess-11-closeup-everfresh-red-hot-gel-toothpaste-150-g-pack-of-2-product-images-o490008332-p490008332-0-202306071847.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="6_personalcare.html"><h4 class="showcase__title">Closeup paste</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹160.00</span>
+              <span class="old__price">₹200.00</span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="showcase__item zoom-in">
+          <a href="3_homecare.html" class="showcase__img-box">
+            <img src="./assets/img/ess-22-surf-excel-easy-wash-detergent-powder-5-kg-product-images-o492367966-p590837659-0-202410161619.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="3_homecare.html"><h4 class="showcase__title">Surf Excel powder</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹558.00</span>
+              <span class="old__price">₹655.00</span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="showcase__item zoom-in">
+          <a href="5_cookingessentials.html" class="showcase__img-box">
+            <img src="./assets/img/ess-33-fortune-sunlite-refined-sunflower-oil-1-l-product-images-o490000052-p490000052-0-202203150155.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="5_cookingessentials.html"><h4 class="showcase__title">Fortune Sunflower oil</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹159.00</span>
+              <span class="old__price">₹200.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Snacks Store Section -->
+      <div class="showcase__wrapper slide-up">
+        <h3 class="section__title fade-in">Snacks Store</h3>
+  
+        <div class="showcase__item zoom-in">
+          <a href="4_packedfood.html" class="showcase__img-box">
+            <img src="./assets/img/snacks-11-murukku.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="4_packedfood.html"><h4 class="showcase__title">Murruku</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹50.00</span>
+              <span class="old__price">₹60.00</span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="showcase__item zoom-in">
+          <a href="4_packedfood.html" class="showcase__img-box">
+            <img src="./assets/img/snacks-22-hot-n-sweet-potato-chips-crispy-chips-snacks.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="4_packedfood.html"><h4 class="showcase__title">Lays</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹50.00</span>
+              <span class="old__price">₹60.00</span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="showcase__item zoom-in">
+          <a href="4_packedfood.html" class="showcase__img-box">
+            <img src="./assets/img/snacks-33-dark-fantasy-vanilla-creme-biscuits-249-g-pack-of-3-product-images-o491696803-p590126856-0-202406031907.webp" alt="" class="showcase__img" />
+          </a>
+          <div class="showcase__content">
+            <a href="4_packedfood.html"><h4 class="showcase__title">Dark fantasy biscuits</h4></a>
+            <div class="showcase__price flex">
+              <span class="new__price">₹45.00</span>
+              <span class="old__price">₹55.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </section>
+  
+
+  <!--=============== NEWSLETTER ===============-->
+  <section class="newsletter section home__newsletter slide-up">
+    <div class="newsletter__container container grid">
+      <h3 class="newsletter__title flex fade-in">
+        <img src="./assets/img/icon-email.svg" alt="" class="newsletter__icon" />
+        Sign in to Freshyy grocery
+      </h3>
+      <p class="newsletter__description fade-in">
+        ...and receive %25 for first shopping.
+      </p>
+      <form action="" class="newsletter__form zoom-in">
+        <input type="text" placeholder="Enter Your Email" class="newsletter__input" />
+        <button type="submit" class="newsletter__btn">Subscribe</button>
+      </form>
+    </div>
+  </section>
+  
+</main>
+{% endblock content %}

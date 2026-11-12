@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f5f7fa;
+    }
+
+    .admin-dashboard {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 40px;
+        background: linear-gradient(to bottom right, #ffffff, #f9fbfd);
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        border-bottom: 2px solid #e9eff5;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+    .admin-header h1 {
+        font-size: 2.2rem;
+        color: #2c3e50;
+    }
+
+    .admin-header nav a {
+        margin: 0 10px;
+        padding: 10px 16px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s ease;
+    }
+
+    .admin-header nav a:hover {
+        background-color: #0056b3;
+    }
+
+    .admin-section {
+        margin-top: 40px;
+    }
+
+    .admin-section h2 {
+        font-size: 1.8rem;
+        color: #34495e;
+        margin-bottom: 20px;
+        border-left: 5px solid #007bff;
+        padding-left: 15px;
+    }
+
+    .admin-section ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+    .admin-section ul li {
+        margin-bottom: 12px;
+    }
+
+    .admin-section ul li a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 1.05rem;
+    }
+
+    .admin-section ul li a:hover {
+        text-decoration: underline;
+    }
+
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .orders-table thead {
+        background-color: #f0f4f8;
+        color: #34495e;
+    }
+
+    .orders-table th, .orders-table td {
+        padding: 16px 20px;
+        text-align: left;
+        border-bottom: 1px solid #e6eaf0;
+    }
+
+    .orders-table tbody tr:hover {
+        background-color: #f9fbfc;
+    }
+
+    .no-orders {
+        background: #fff;
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        text-align: center;
+        color: #888;
+    }
+
+    @media (max-width: 768px) {
+        .admin-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .admin-header nav {
+            margin-top: 15px;
+        }
+
+        .orders-table th, .orders-table td {
+            padding: 12px 10px;
+        }
+    }
+</style>
+
+<div class="admin-dashboard">
+    <header class="admin-header">
+        <h1>Welcome, {{ request.user.username }} <small>(Admin)</small></h1>
+        <nav>
+            <a href="{% url 'dashboard' %}">User View</a>
+            <a href="{% url 'add_product' %}">Add Product</a>
+            <a href="{% url 'manage_orders' %}">Manage Orders</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="admin-section">
+            <h2>🛠️ Admin Actions</h2>
+            <ul>
+                <li><a href="{% url 'add_product' %}">➕ Add New Product</a></li>
+                <li><a href="{% url 'manage_orders' %}">📦 View & Manage Orders</a></li>
+                <li><a href="{% url 'dashboard' %}">🛍️ View All Products</a></li>
+            </ul>
+        </section>
+
+        <section class="admin-section">
+            <h2>📄 Recent Orders</h2>
+            {% if orders %}
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>User</th>
+                            <th>Products</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            <tr>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.user.username }}</td>
+                                <td>
+                                    {% for product in order.products.all %}
+                                        {{ product.product_name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>{{ order.ordered_at }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-orders">
+                    <p>No recent orders found.</p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</div>
+{% endblock content %}

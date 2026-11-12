@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .edit-product-container {
+        margin-top: 70px;
+        margin-bottom: 70px;
+    }
+
+    .card {
+        border-radius: 1.25rem;
+        border: none;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        font-size: 1rem;
+        padding: 12px;
+        box-shadow: none !important;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.25);
+    }
+
+    textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .btn-success {
+        padding: 10px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        border-radius: 10px;
+    }
+
+    .btn-outline-secondary {
+        border-radius: 10px;
+        padding: 8px 20px;
+        margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .card-title {
+            font-size: 1.6rem;
+        }
+
+        .btn-success {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="container edit-product-container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card p-4">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Edit Product</h3>
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-success">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center">
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                            ← Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

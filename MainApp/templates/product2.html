@@ -1,0 +1,16 @@
+<!-- product.html -->
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Product Detail</h2>
+
+    {% for prod in products %}
+        <h1>{{prod.product_name}}</h1>
+        <h1>hello</h1>
+
+        <a href="{% url 'add_to_cart' prod.product_id %}">Add to cart</a>
+    {% endfor %}
+
+    <p>This is the product detail page. You can expand it to include actual product info.</p>
+</div>
+{% endblock %}

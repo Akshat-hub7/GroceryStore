@@ -1,0 +1,48 @@
+<!-- shop.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-3 mb-2 animate-on-scroll">
+  <h2 class="animate-on-scroll">Welcome to Our Shop!</h2>
+  <p class="animate-on-scroll">Browse our wide selection of groceries and essentials.</p>
+
+  <!-- CATEGORIES -->
+  <section class="categories container section animate-on-scroll">
+    <h3 class="section__title"><span>Popular</span> Categories</h3>
+    <div class="categories__container swiper">
+      <div class="swiper-wrapper">
+        {% for key, value in category_choices %}
+          <a href="{% url 'category_filter' key %}" class="category__item swiper-slide">
+            <h3 class="category__title">{{ value }}</h3>
+          </a>
+        {% endfor %}
+      </div>
+
+      <div class="swiper-button-prev"><i class="fi fi-rs-angle-left"></i></div>
+      <div class="swiper-button-next"><i class="fi fi-rs-angle-right"></i></div>
+    </div>
+  </section>
+
+  <!-- DEFAULT PRODUCTS (Dairy) -->
+  <section class="products container mt-4 animate-on-scroll">
+    <h3 class="section__title"><span>Dairy</span> Products</h3>
+    <div class="products__container grid">
+      {% for product in default_dairy_products %}
+        <div class="product__item zoom-in">
+          <a href="{% url 'products_detail' product.product_id %}">
+            <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}" class="product__img" />
+          </a>
+          <h4 class="product__title">{{ product.product_name }}</h4>
+          <p class="product__price">₹{{ product.offer_price }}</p>
+        </div>
+      {% empty %}
+        <p>No dairy products available.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <a href="{% url 'dashboard' %}" class="btn btn-primary mt-3 animate-on-scroll">Go To Home</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f6fa;
+    }
+
+    .product-wrapper {
+        max-width: 1100px;
+        margin: 60px auto;
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+    }
+
+    .product-img-container {
+        flex: 1 1 320px;
+        max-width: 500px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background-color: #fafafa;
+        padding: 10px;
+    }
+
+    .product-img-container img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 12px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .product-img-container img:hover {
+        transform: scale(1.05);
+    }
+
+    .product-info {
+        flex: 2 1 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .product-info h2 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 20px;
+    }
+
+    .product-info p {
+        font-size: 1.15rem;
+        color: #555;
+        margin-bottom: 15px;
+        line-height: 1.7;
+    }
+
+    .product-info .price {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #27ae60;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .btn-custom {
+        padding: 12px 30px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+    }
+
+    .btn-edit {
+        background-color: #2980b9;
+        color: #fff;
+    }
+
+    .btn-edit:hover {
+        background-color: #1c5983;
+    }
+
+    .btn-delete {
+        background-color: #e74c3c;
+        color: #fff;
+    }
+
+    .btn-delete:hover {
+        background-color: #c0392b;
+    }
+
+    .btn-add-to-cart {
+        background-color: #e67e22;
+        color: #fff;
+    }
+
+    .btn-add-to-cart:hover {
+        background-color: #d35400;
+    }
+
+    .login-prompt {
+        margin-top: 25px;
+    }
+
+    .login-prompt a {
+        color: #2980b9;
+        font-weight: 500;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .product-wrapper {
+            flex-direction: column;
+            padding: 30px 20px;
+        }
+
+        .product-info {
+            text-align: center;
+        }
+
+        .btn-custom {
+            margin-top: 10px;
+            margin-right: 0;
+        }
+    }
+</style>
+
+<div class="product-wrapper">
+    {% if product.product_image %}
+    <div class="product-img-container">
+        <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}">
+    </div>
+    {% endif %}
+
+    <div class="product-info">
+        <h2>{{ product.product_name }}</h2>
+        <p><strong>Description:</strong> {{ product.product_desc }}</p>
+        <p class="price">₹{{ product.offer_price }}</p>
+
+        {% if request.user.user_type == 'admin' %}
+            <a href="{% url 'edit_product' product.product_id %}" class="btn-custom btn-edit">Edit</a>
+            <a href="{% url 'delete_product' product.product_id %}" class="btn-custom btn-delete">Delete</a>
+        {% endif %}
+
+        {% if request.user.user_type == 'user' %}
+            <a href="{% url 'add_to_cart' product.product_id %}" class="btn-custom btn-add-to-cart">Add to Cart</a>
+        {% elif not request.user.is_authenticated %}
+            <p class="login-prompt">
+                <a href="{% url 'login' %}">Login</a> to add this item to your cart.
+            </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
